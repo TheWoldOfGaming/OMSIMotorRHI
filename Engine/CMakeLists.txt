@@ -1,5 +1,7 @@
 add_library(Engine STATIC
-	Core/Win32Window.cpp
+	Platform/Win32Window.cpp
+	Platform/WindowFactory.cpp
+	Application/Application.cpp
 )
 
 target_include_directories(Engine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
