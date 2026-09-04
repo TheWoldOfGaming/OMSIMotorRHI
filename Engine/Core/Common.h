@@ -10,4 +10,11 @@ namespace Engine
 		bool resizeable = true;
 		bool fullscreen = false;
 	};
+
+	struct RenderDeviceDesc
+	{
+		void* hwnd = nullptr;
+		int width = 1280;
+		int height = 720;
+	};
 }
