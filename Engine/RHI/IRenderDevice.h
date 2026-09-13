@@ -1,8 +1,10 @@
 #pragma once
+#include <Core/Common.h>
 
 namespace Engine
 {
 	class IRenderContext;
+	class IVertexBuffer;
 
 	class IRenderDevice
 	{
@@ -13,6 +15,8 @@ namespace Engine
 		virtual void Shutdown() = 0;
 
 		virtual IRenderContext* GetContext() = 0;
+
+		virtual void* GetNativeDevice() = 0;
 
 		virtual void Resize(int width, int height) = 0;
 	};

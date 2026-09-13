@@ -1,4 +1,5 @@
 #include <RHI/DX11/D3D11RenderDevice.h>
+#include <RHI/DX11/D3D11VertexBuffer.h>
 #include <wrl/client.h>
 
 namespace Engine
@@ -21,19 +22,24 @@ namespace Engine
 		scd.Windowed = TRUE;
 		scd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
+		UINT createDeviceFlags = 0;
+#if defined(_DEBUG)
+		createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
 		HRESULT hr = D3D11CreateDeviceAndSwapChain(
 			nullptr,
 			D3D_DRIVER_TYPE_HARDWARE,
 			nullptr,
-			0,
+			createDeviceFlags,
 			nullptr,
 			0,
 			D3D11_SDK_VERSION,
 			&scd,
-			&m_swapChain,
-			&m_device,
+			m_swapChain.GetAddressOf(),
+			m_device.GetAddressOf(),
 			nullptr,
-			&m_immediateContext
+			m_immediateContext.GetAddressOf()
 		);
 
 		if (FAILED(hr))
@@ -57,7 +63,19 @@ namespace Engine
 			return false;
 		}
 
-		m_context = std::make_unique<D3D11RenderContext>(m_immediateContext, m_swapChain.Get(), m_backBufferRTV.Get());
+		ID3D11RenderTargetView* rtv = m_backBufferRTV.Get();
+		m_immediateContext->OMSetRenderTargets(1, &rtv, nullptr);
+
+		D3D11_VIEWPORT viewport{};
+		viewport.TopLeftX = 0.0f;
+		viewport.TopLeftY = 0.0f;
+		viewport.Width = static_cast<float>(width);
+		viewport.Height = static_cast<float>(height);
+		viewport.MinDepth = 0.0f;
+		viewport.MaxDepth = 1.0f;
+		m_immediateContext->RSSetViewports(1, &viewport);
+
+		m_context = std::make_unique<D3D11RenderContext>(m_immediateContext, m_swapChain.Get(), m_backBufferRTV.Get(), this);
 
 		return true;
 	}
@@ -65,6 +83,11 @@ namespace Engine
 	IRenderContext* D3D11RenderDevice::GetContext()
 	{
 		return m_context.get();
+	}
+
+	void* D3D11RenderDevice::GetNativeDevice()
+	{
+		return m_device.Get();
 	}
 
 	void D3D11RenderDevice::Resize(int width, int height)
@@ -82,6 +105,18 @@ namespace Engine
 		m_swapChain.Reset();
 		m_immediateContext.Reset();
 		m_device.Reset();
+	}
+
+	void D3D11RenderDevice::RefreshBackBufferRTV()
+	{
+		Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
+		m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), &backBuffer);
+
+		m_backBufferRTV.Reset();
+		m_device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_backBufferRTV);
+
+		ID3D11RenderTargetView* rtv = m_backBufferRTV.Get();
+		m_immediateContext->OMSetRenderTargets(1, &rtv, nullptr);
 	}
 
 	D3D11RenderDevice::~D3D11RenderDevice()

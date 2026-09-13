@@ -18,7 +18,11 @@ namespace Engine
 
 		IRenderContext* GetContext() override;
 
+		void* GetNativeDevice() override;
+
 		void Resize(int width, int height) override;
+
+		void RefreshBackBufferRTV();
 
 	private:
 		Microsoft::WRL::ComPtr<ID3D11Device> m_device;

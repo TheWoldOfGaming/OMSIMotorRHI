@@ -10,6 +10,7 @@
 namespace Engine
 {
 	std::ofstream Logger::s_LogFile;
+	LogLevel Logger::s_MinLogLevel = LogLevel::Trace;
 
 	void Logger::Initialize(const std::string& logFile)
 	{
@@ -22,6 +23,11 @@ namespace Engine
 		const std::string& message
 	)
 	{
+		if (level < s_MinLogLevel)
+		{
+			return;
+		}
+
 		const auto now = std::chrono::system_clock::now();
 		const std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
 
@@ -37,6 +43,14 @@ namespace Engine
 
 		switch (level)
 		{
+		case LogLevel::Trace:
+			levelString = "TRACE";
+			break;
+
+		case LogLevel::Debug:
+			levelString = "DEBUG";
+			break;
+
 		case LogLevel::Info:
 			levelString = "INFO";
 			break;
@@ -132,6 +146,22 @@ namespace Engine
 			s_LogFile << formattedMessage;
 			s_LogFile.flush();
 		}
+	}
+
+	void Logger::Trace(
+		LogCategory category,
+		const std::string& message
+	)
+	{
+		Log(LogLevel::Trace, category, message);
+	}
+
+	void Logger::Debug(
+		LogCategory category,
+		const std::string& message
+	)
+	{
+		Log(LogLevel::Debug, category, message);
 	}
 
 	void Logger::Info(

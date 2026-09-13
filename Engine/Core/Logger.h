@@ -5,6 +5,8 @@ namespace Engine
 {
 	enum class LogLevel
 	{
+		Trace = 0,
+		Debug,
 		Info,
 		Warning,
 		Error,
@@ -31,8 +33,20 @@ namespace Engine
 	public:
 		static void Initialize(const std::string& logFile);
 
+		static void SetLogLevel(LogLevel level) { s_MinLogLevel = level; }
+
 		static void Log(
 			LogLevel level,
+			LogCategory category,
+			const std::string& message
+		);
+
+		static void Trace(
+			LogCategory category,
+			const std::string& message
+		);
+
+		static void Debug(
 			LogCategory category,
 			const std::string& message
 		);
@@ -60,6 +74,6 @@ namespace Engine
 		static std::ofstream s_LogFile;
 
 	private:
-		
+		static LogLevel s_MinLogLevel;
 	};
 }

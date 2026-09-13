@@ -1,4 +1,5 @@
 #pragma once
+#include <RHI/Vertex.h>
 
 namespace Engine
 {
@@ -16,5 +17,11 @@ namespace Engine
 		void* hwnd = nullptr;
 		int width = 1280;
 		int height = 720;
+	};
+
+	struct VertexBufferDesc
+	{
+		const Vertex* vertices = nullptr;
+		size_t vertexCount = 0;
 	};
 }
