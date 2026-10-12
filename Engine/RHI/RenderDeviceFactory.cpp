@@ -1,24 +1,13 @@
 #include <RHI/RenderDeviceFactory.h>
-#include <RHI/DX11/D3D11RenderDevice.h>
+#include <RHI/IRenderDevice.h>
+
+#include <RHI/Backends/D3D11/D3D11RenderDevice.h>
+
 
 namespace Engine
 {
-	IRenderDevice* FactoryCreateRenderDevice(const RenderDeviceDesc& desc)
+	std::unique_ptr<IRenderDevice> CreateRenderDevice()
 	{
-#ifdef _WIN32
-		D3D11RenderDevice* device = new D3D11RenderDevice();
-
-		if (!device->Initialize(desc.hwnd, desc.width, desc.height))
-		{
-			delete device;
-			return nullptr;
-		}
-
-
-		return device;
-
-#else
-		return nullptr;
-#endif
+		return std::make_unique<D3D11RenderDevice>();
 	}
 }

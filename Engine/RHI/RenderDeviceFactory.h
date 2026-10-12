@@ -1,8 +1,9 @@
 #pragma once
-#include <RHI/IRenderDevice.h>
-#include <Core/Common.h>
+#include <memory>
 
 namespace Engine
 {
-	IRenderDevice* FactoryCreateRenderDevice(const RenderDeviceDesc& desc);
+	class IRenderDevice;
+
+	std::unique_ptr<IRenderDevice> CreateRenderDevice();
 }

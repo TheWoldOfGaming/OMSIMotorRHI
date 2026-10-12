@@ -127,8 +127,9 @@ namespace Engine
 			return 0;
 
 		case WM_SIZE:
-			m_width = LOWORD(lParam);
-			m_height = HIWORD(lParam);
+			m_width = static_cast<int>(LOWORD(lParam));
+			m_height = static_cast<int>(HIWORD(lParam));
+
 			return 0;
 
 		default:

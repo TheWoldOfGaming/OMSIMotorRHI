@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include <RHI/Vertex.h>
 
 namespace Engine

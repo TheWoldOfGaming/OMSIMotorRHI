@@ -1,19 +1,13 @@
 #pragma once
 #include <memory>
+
+// Interfaces
 #include <Platform/IWindow.h>
+
+// Factories
 #include <Platform/WindowFactory.h>
 
-#include <RHI/IRenderDevice.h>
-#include <RHI/IVertexBuffer.h>
-#include <RHI/IVertexShader.h>
-#include <RHI/IPixelShader.h>
-#include <RHI/IInputLayout.h>
-
-#include <RHI/RenderDeviceFactory.h>
-#include <RHI/VertexBufferFactory.h>
-#include <RHI/VertexShaderFactory.h>
-#include <RHI/PixelShaderFactory.h>
-#include <RHI/InputLayoutFactory.h>
+#include <RHI/Renderer.h>
 
 
 namespace Engine
@@ -30,10 +24,6 @@ namespace Engine
 
 	private:
 		std::unique_ptr<IWindow> m_window;
-		std::unique_ptr<IRenderDevice> m_renderDevice;
-		std::unique_ptr<IVertexBuffer> m_vertexBuffer;
-		std::unique_ptr<IVertexShader> m_vertexShader;
-		std::unique_ptr<IPixelShader> m_pixelShader;
-		std::unique_ptr<IInputLayout> m_inputLayout;
+		std::unique_ptr<Renderer> m_renderer;
 	};
 }
